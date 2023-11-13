@@ -23,7 +23,9 @@ def extract(source,start_at, end_at):
             return source[start:end]
 
 def get (url):
-    user_agent = {'User-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36'}
+    user_agent = {'User-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'}
+  
+    # html = requests.get(url, headers = user_agent)
     html = requests.get(url, headers = user_agent, verify=False)
     html.encoding = 'utf-8'
     html = html.text
