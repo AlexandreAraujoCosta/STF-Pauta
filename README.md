@@ -5,6 +5,7 @@
 Este programa abre as páginas do STF que definem as datas das pautas presenciais e do Plenário Virtual.
 
 Ele grava na pasta '/datas_pautas' (que deve ser criada para esse fim) os  dados acerca de quais são as datas em que houve pautas presenciais e também início e fim das pautas virtuais, informações que são necessárias para construir os urls para identificar os dados de julgamento de cada sessão pautada.
+Este e outros programas utilizam funções do módulo dsl.py (Data Science and Law), que também está disponível (e que é uma atualização do módulo dsd.py, que está disponível em um repositório próprio).
 
 ## Etapa 2. urls_pautas.py
 
