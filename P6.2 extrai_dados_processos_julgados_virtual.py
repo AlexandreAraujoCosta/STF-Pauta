@@ -9,7 +9,7 @@ import pandas as pd
 import dsl
 
 dados_a_gravar = []
-source = 'processos_julgados_virtual_TP_total.txt'
+source = 'total.csv'
 
 dados_df    = pd.read_csv(source, dtype={"teste": str})
 dados_lista = dados_df.values.tolist()
@@ -700,6 +700,7 @@ dfvotos = pd.DataFrame(votos_PV , columns=[
                                         'ministroVistor',                            
                                         'sessao',
                                         'sessao_tipo',
+                                        'sessao_numero',
                                         'sessao_ano',
                                         'sessao_colegiado',
                                         'sessao_data_prevista_inicio',
@@ -707,7 +708,6 @@ dfvotos = pd.DataFrame(votos_PV , columns=[
                                         'sessao_data_prevista_fim',
                                         'sessao_data_fim',
                                         'tipoJulgamentoVirtual',
-                                        'sessao_tipo',                            
                                         'textoDecisao',
                                         'textoDecisao2',
                                         'lista_tipo',
@@ -760,6 +760,7 @@ dfprocessos = pd.DataFrame(processos_PV, columns=[ 'identificador',
                                             'ministroVistor',                            
                                             'sessao',
                                             'sessao_tipo',
+                                            'sessao-numero',
                                             'sessao_ano',
                                             'sessao_colegiado',
                                             'sessao_data_prevista_inicio',
@@ -767,7 +768,6 @@ dfprocessos = pd.DataFrame(processos_PV, columns=[ 'identificador',
                                             'sessao_data_prevista_fim',
                                             'sessao_data_fim',
                                             'tipoJulgamentoVirtual',
-                                            'sessao_tipo',                            
                                             'textoDecisao',
                                             'textoDecisao2',
                                             'lista_tipo',
@@ -894,3 +894,8 @@ dfprocessos = pd.DataFrame(processos_PV, columns=[ 'identificador',
                                             'v12_acompanha',
                                             'v12_texto'])
 dfprocessos.to_csv('processos_PV.txt', index=False)
+
+
+print('gravando_excel')
+dfprocessos.to_excel('processos_PV.xlsx', index=False)
+dfvotos.to_excel('votos_PV.xlsx', index=False)

@@ -26,8 +26,8 @@ n = 0
 start = 2000
 
 for lista in listas:
-    if lista[0] == 'TP':
-    # if lista[0] == 'T1':
+    # if lista[0] == 'TP':
+    if lista[0] == 'T1':
     # if lista[0] == 'T2':
 
         lista_buscar.append(lista)
@@ -193,4 +193,4 @@ df = pd.DataFrame(dados_a_gravar, columns=[ 'identificador',
                                                 'lista_desc',
                                                 'lista_ordem',
                                                 'lista_quantidade'])
-df.to_csv('processos_julgados_virtual_TP_final.txt', index=False)
+df.to_csv('processos_julgados_virtual_T1_final.txt', index=False)
