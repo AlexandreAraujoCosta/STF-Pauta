@@ -10,7 +10,7 @@ import dsl
 
 dados_a_gravar = []
 id_list = []
-source = 'pautas_virtuais_dados.txt'
+source = 'pautas_presenciais_dados.txt'
 
 def processar_lista (listas_string):
     listas = listas_string.split('"idTipo":"')[1:]
@@ -60,17 +60,15 @@ for item in virtuais:
     # processa T1
     dados_T1 = dsl.extract(dados,'"codigo":"1T",','"codigo":"2T"').replace('"descricao":"Primeira Turma","sessoes":[','')
     orgao = 'T1'
-    processar_lista(dados_T1)
+    retorno = processar_lista(dados_T1)    
     
     # processa T2
     dados_T2 = dsl.extract(dados,'"codigo":"2T",','"codigo":"TP",').replace('"descricao":"Segunda Turma","sessoes":[','')
     orgao = 'T2'
-    processar_lista(dados_T2)
     
     # # processa TP
     dados_TP = dsl.extract(dados,'"codigo":"TP",','"codigo":"1T"').replace('"descricao":"Plenário","sessoes":[','')
     orgao = 'TP'
-    processar_lista(dados_TP)
 
 df = pd.DataFrame(id_list, columns=['id_lista',
                                     'orgão'])
@@ -86,5 +84,5 @@ df = pd.DataFrame(dados_a_gravar, columns=['orgao',
                                     'lista_desc',
                                     'lista_ordem',
                                     'lista_quantidade'])
-df.to_csv('pautas_virtuais_dados_processados.txt', index=False)
+df.to_csv('dados_pautas_virtual.txt', index=False)
 

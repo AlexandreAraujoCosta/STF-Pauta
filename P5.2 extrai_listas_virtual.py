@@ -12,7 +12,7 @@ import time
 import urllib3
 urllib3.disable_warnings()
 
-source = 'dados_pautas_virtual.txt'
+source = 'pautas_virtuais_dados_processados.txt'
 url = 'https://portal.stf.jus.br/pauta/services/lista-service.asp?lista='
 url2 = 'https://sistemas.stf.jus.br/repgeral/votacao?oi='
 url3 = 'https://sistemas.stf.jus.br/repgeral/votacao?sessaoVirtual='
@@ -23,6 +23,7 @@ listas = pd.read_csv(source, dtype={"teste": str}).values.tolist()
 lista_buscar = []
 dados_a_gravar = []
 n = 0
+start = 2000
 
 for lista in listas:
     if lista[0] == 'TP':
@@ -31,9 +32,37 @@ for lista in listas:
 
         lista_buscar.append(lista)
 
-
-for lista in lista_buscar:
-    # time.sleep(1)
+for lista in lista_buscar[start:]:
+    
+    if n%500 == 0 and n != 0:
+        print ('gravando')
+        df = pd.DataFrame(dados_a_gravar, columns=[ 'identificador',
+                                                      'identificacao',
+                                                      'identCompleta',
+                                                      'principal',
+                                                      'pai',
+                                                      'tipoOIncidente',  
+                                                      'incidente',
+                                                        'classe',
+                                                        'numero',
+                                                        'string',
+                                                        'procedencia',
+                                                        'partes',
+                                                        'dados_julgamento',
+                                                        'orgao',
+                                                        'data_inicial',
+                                                        'data_final',
+                                                        'tipo',
+                                                        'tipo_desc',
+                                                        'relator',
+                                                        'lista_id',
+                                                        'lista_desc',
+                                                        'lista_ordem',
+                                                        'lista_quantidade'])
+        df.to_csv('processos_julgados_virtual_TP' + str(n) +'.txt', index=False)
+        dados_a_gravar = []
+        
+    time.sleep(1)
     n = n + 1
     
     lista_id=str(lista[6])
@@ -54,9 +83,27 @@ for lista in lista_buscar:
         
     dsl.esperar(151,120,n)
     
-    print (str(n) + ' de ' + str(len(lista_buscar)) + ' - ' + captcha + ' - ' + dados[:50])
+    print (str(n) + ' de ' + str(len(lista_buscar) - start) + ' - ' + captcha + ' - ' + dados[:50])
     
-    processos = dados.split('{"id":"')[1:]
+    if dados == '[]':
+        processos = ['lista vazia']
+    else:    
+        processos = dados.split('{"id":"')[1:]
+    
+    incidente = 'na'
+    classe = 'na'
+    numero = 'na'
+    string = 'na'
+    procedencia = 'na'
+    partes = 'na'
+    identificador   = 'na'
+    identificacao   = 'na'
+    identCompleta   = 'na'
+    principal       = 'na'
+    pai             = 'na'
+    tipoOIncidente  = 'na'
+    dados2 = 'na'
+    dados3 = 'na'
     for processo in processos:
         incidente = dsl.extract(processo,'','"')
         classe = dsl.extract(processo,'"classe":"','"')
@@ -88,7 +135,10 @@ for lista in lista_buscar:
         tipoOIncidente  = dsl.limpar(dsl.extract(dados2,'"tipoObjetoIncidente" : {','}'))
         
         # busca dados de cada julgamento
-        dados3 = dsl.get(url3+identificador)
+        if identificador == 'na':
+            dados3 = 'na'
+        else:
+            dados3 = dsl.get(url3+identificador)
     
         if 'CAPTCHA' in dados3:
             captcha = 'captcha'
@@ -118,6 +168,7 @@ for lista in lista_buscar:
         
         dados_a_gravar.append(dados_processo)
         
+
     
 df = pd.DataFrame(dados_a_gravar, columns=[ 'identificador',
                                               'identificacao',
@@ -142,4 +193,4 @@ df = pd.DataFrame(dados_a_gravar, columns=[ 'identificador',
                                                 'lista_desc',
                                                 'lista_ordem',
                                                 'lista_quantidade'])
-df.to_csv('processos_julgados_virtual_TP.txt', index=False)
+df.to_csv('processos_julgados_virtual_TP_final.txt', index=False)

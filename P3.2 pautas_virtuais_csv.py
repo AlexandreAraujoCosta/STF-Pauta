@@ -51,4 +51,4 @@ for url in virtuais:
                               ])
     
 df = pd.DataFrame(virtuais_dados, columns=['dados',"data",'tipo','dados'])
-df.to_csv('pautas_virtuais_dados.txt', index=False)
+df.to_csv('pautas_virtuais_dados2.txt', index=False)

@@ -6,38 +6,55 @@ Created on Sun Nov 12 10:42:59 2023
 """
 
 import dsl
-import os
 import pandas as pd
 
 import urllib3
 urllib3.disable_warnings()
 
-path = 'datas_pautas\\'
-lista = os.listdir(path)
-pautas_virtuais_urls = []
+origem = 'P1r pautas_dados.txt'
+pautas_virtuais_lista = []
+pautas_presenciais_lista = []
 pautas_presenciais_urls = []
+pautas_virtuais_urls = []
 
+dados = pd.read_csv(origem, dtype={"teste": str}).values.tolist()
 
-for file in lista:
-    # Upload data
-        
-    mes = file[5:7]
-    ano = file[7:11]
+# separa sessões virtuais e presenciais
+for item in dados:
+    pauta_presencial = 'NA'
+    pauta_virtual = 'NA'
     
-    arquivo = open(path + file, "r", encoding="utf-8")
-    html = arquivo.read()#abre html
-    arquivo.close()
-    html = dsl.trim(html,'urlfim, ','')
     
-    pautas = html.split('"julgamentosVirtuais":')
-    pauta_presencial = pautas[0].strip('{"diasPresenciais":')[1:-2]
-    pauta_virtual = pautas[1][1:-2]
+    mes = item[1]
+    if int(mes)<10:
+        mes = '0'+ str(mes)
+    ano = item[0]
+    dados = item[3]
+    
+    dados = dados.split('"julgamentosVirtuais":')
+    pauta_presencial = dados[0].strip('{"diasPresenciais":')[1:-2]
+    pauta_virtual = dados[1][1:-2]
+    # print (pauta_virtual)
 
-    
-# processa pautas virtuais
-    pautas_virtuais_lista = []
+    #  processa pautas presenciais
+    if len(pauta_presencial) > 0:
+        if ',' in pauta_presencial:
+            pautas_presenciais = pauta_presencial.split(',')
+        else:
+            pautas_presenciais = [pauta_presencial]
+                
+        for dia in pautas_presenciais:
+            if int(dia)<10:
+                dia = '0'+dia
+            tipo='sessao-presencial'
+            data = str(dia) + '/' + str(mes)+ '/' +str(ano)
+            
+            pautas_presenciais_lista.append([tipo,data])
+            
+    # processa pautas virtuais
     if len(pauta_virtual) > 0 :
         pautas_virtuais = pauta_virtual.split('},')
+        print (pautas_virtuais)
         
         for item in pautas_virtuais:
             tipo = 'sessao-virtual'
@@ -53,32 +70,21 @@ for file in lista:
                                           qtdPlenario,
                                           qtdPrimeiraTurma,
                                           qtdSegundaTurma])
-    #  processa pautas presenciais
-    pautas_presenciais_lista = []
-    if len(pauta_presencial) > 0:
-        pautas_presenciais = pauta_presencial.split(',')
-        for dia in pautas_presenciais:
-            if int(dia)<10:
-                dia = '0'+dia
-            tipo='sessao-presencial'
-            date = dia+'/'+mes+'/'+ano
-            
-            pautas_presenciais_lista.append([tipo,date])
         
-    # gera urls pautas virtuais
-    for item in pautas_virtuais_lista:
-        url = f'https://portal.stf.jus.br/pauta/services/calendario-service.asp?dados=sessao-virtual&inicio={item[1]}&fim={item[2]}'
-        pautas_virtuais_urls.append(url)
+# gera urls pautas presenciais
+for item in pautas_presenciais_lista:
+    url = f'https://portal.stf.jus.br/pauta/services/calendario-service.asp?dados=sessao-presencial&data={item[1]}'
+    pautas_presenciais_urls.append(url)
     
-    # gera urls pautas presenciais
-    for item in pautas_presenciais_lista:
-        print (pautas_presenciais_lista)
-        url = f'https://portal.stf.jus.br/pauta/services/calendario-service.asp?dados=sessao-presencial&data={item[1]}'
-        pautas_presenciais_urls.append(url)
-        
+# gera urls pautas virtuais
+for item in pautas_virtuais_lista:
+    url = f'https://portal.stf.jus.br/pauta/services/calendario-service.asp?dados=sessao-virtual&inicio={item[1]}&fim={item[2]}'
+    pautas_virtuais_urls.append(url)
+
+
 # grava arquivos com listas de url
-df = pd.DataFrame(pautas_virtuais_urls, columns=["colummn"])
+df = pd.DataFrame(pautas_virtuais_urls, columns=["url"])
 df.to_csv('pautas_virtuais_urls.txt', index=False)
 
-df = pd.DataFrame(pautas_presenciais_urls, columns=["colummn"])
-df.to_csv('pautas_presenciais_urls.txt', index=False)
+df2 = pd.DataFrame(pautas_presenciais_urls, columns=["url"])
+df2.to_csv('pautas_presenciais_urls.txt', index=False)
