@@ -17,7 +17,7 @@ Os arquivos gerados em 14/11/2023 estão neste repositório.
 ## Etapa 3. pautas_presenciais.py e pautas_virtuais.py
 Estes arquivos processam os documentos gerados na fase anterior e produzem uma tabela com todos os dados relativos a cada data de sessão (nas quais pode haver uma ou várias sessões).
 Processamos separadamente as sessões virtuais e as presenciais, cujas informações têm estruturas ligeiramente diversas, produzindo assim documentos com todos os dados relativos às sessões de julgamento.
-#### Retornam: pautas_presenciais_dados.txt, pautas_presenciais_vazias.txt e pautas_virtuais_dados_processados.txt
+#### Retornam: pautas_presenciais_dados.txt, pautas_presenciais_vazias.txt e pautas_virtuais_dados.txt
 
 ## Etapa 4. processa_listas_presenciais.py e processa_listas_virtuais.py
 Nesta etapa, os dados das sessões são processados para extrair dele o conteúdo dos julgamentos.
