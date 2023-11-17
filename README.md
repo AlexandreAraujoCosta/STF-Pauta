@@ -35,4 +35,4 @@ Fiz, por enquanto, apenas a coleta do TP, pois esse é um processo bastante long
 Na última etapa, os dados catalogados são processados, gerando-se duas tabelas: uma que tem como unidade de análise (linha) os votos individualizados e outra com os processos (com informações sobre a ordem das votações).
 #### Retorna: votos_PV.txt e processos_PV.txt; votos_PV.xlsx e processos_PV.xlsx
 
-## Donwloand Zip: https://drive.google.com/file/d/1dqNbezwuiZKqz2vRoIeQXcjxU52ctUO5/view?usp=drive_web
+## Download arquivos finais: Processos_PV.txt (https://drive.google.com/file/d/16i1VJbrI6Ruu4OzhPkKkfz-LUdcGp7iT/view?usp=drive_web), Votos_PV.txt (https://drive.google.com/file/d/1-FFupf5cBcm4hb-RO_5q8vpKpy_JUgrq/view?usp=drive_web)
