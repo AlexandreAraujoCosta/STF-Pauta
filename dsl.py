@@ -1,7 +1,7 @@
-import csv
-import requests
-import time
 import os
+import csv
+import time
+import requests
 from unicodedata import normalize
 
 
