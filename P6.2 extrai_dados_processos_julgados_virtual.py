@@ -28,6 +28,7 @@ votos_PV_relator = []
 votos_info = []
 teste =[]
 
+
 # dados_lista = dados_lista[1023:1123]
 
 # remove processos sem dados adequados
@@ -35,9 +36,14 @@ for n in range(len(dados_lista)):
 # for index in range(2):
     dados_processo_pautado = dados_lista[n]
     processo_dados = []
-    dados_PV = dados_processo_pautado[12]
+    dados_PV = str(dados_processo_pautado[13])
+    dados_lista[n][1] = str(dados_lista[n][1]).replace('.0','')
+    dados_lista[n][4] = str(dados_lista[n][4]).replace('.0','')
+
     
-    if dados_processo_pautado[6] == 'lista vazia':
+    # dados_lista[n][2] = dados_lista[n][2] + ':' + str(dados_lista[n][13])
+    
+    if dados_processo_pautado[0] == 'lista vazia':
         lista_vazia.append(dados_lista[n])
     
     elif dados_PV == 'na':
@@ -51,7 +57,7 @@ for n in range(len(dados_lista)):
         
 for item in available:
     df_original = item
-    pv = item[12].split('"listasJulgamento" : [ ')
+    pv = item[13].split('"listasJulgamento" : [ ')
     
     # ajusta parte inicial (especialmente cadeias)
     pv[0] = pv[0].split('"cadeia" : ')
@@ -84,6 +90,14 @@ for item in available:
                       processo_tipo,
                       len_processo_listas]
     
+    processo_dados_colunas = ['processo_id',
+                      'processo_ident',
+                      'processo_ident_comp',
+                      'processo_principal',
+                      'processo_pai',
+                      'processo_tipo',
+                      'len_processo_listas']
+    
     lista_ref = 0
     for lista in processo_listas:
         lista_ref = lista_ref+1
@@ -99,16 +113,14 @@ for item in available:
         relator_nome = dsl.extract(relator,'"descricao" : "','"').replace('MIN. ','')
         
         votoRelator = dsl.limpar(dsl.extract(lista,'"votoRelator" : {','}'))
-        votoRelator = votoRelator.replace('", "descricao','')
-        votoRelator = votoRelator.replace('", "link','')
-        votoRelator = votoRelator.strip('"')
-        votoRelator = votoRelator.split('" : "')[1:]
+        votoRelator_desc = dsl.extract(votoRelator,'""descricao" : "','"')
+        votoRelator_link = dsl.extract(votoRelator,'"link" : "','"')
+
         
         relatorioRelator = dsl.limpar(dsl.extract(lista,'"relatorioRelator" : {','}'))
-        relatorioRelator = relatorioRelator.replace('", "descricao','')
-        relatorioRelator = relatorioRelator.replace('", "link','')
-        relatorioRelator = relatorioRelator.strip('"')
-        relatorioRelator = relatorioRelator.split('" : "')[1:]
+        relatorioRelator_desc = dsl.extract(relatorioRelator,'"descricao" : "','"')
+        relatorioRelator_link = dsl.extract(relatorioRelator,'"link" : "','"')
+
     
         complementoVotoRelator = dsl.extract(lista,'complementoVotoRelator" : "','"')
         
@@ -198,6 +210,8 @@ for item in available:
         tipoVoto_codigo = 'NA'
         acompanhandoMinistro = 'NA'
         voto_texto = 'NA'
+        vRel_desc = 'NA'
+        vRel_link = 'NA'
         vc_index = 0
         
         # define voto relator
@@ -210,9 +224,13 @@ for item in available:
         vRel_tipo = 'Relator'
         vRel_tipo_codigo = '00'
         vRel_acompanha = 'NA'
-        vRel_texto = votoRelator
+        vRel_desc = votoRelator_desc
+        vRel_link = votoRelator_link
+        
+
         
         vRel_dados = [  vRel_index,
+                        vRel_desc,
                         vRel_id,
                         vRel_ant,
                         vRel_julg,
@@ -220,7 +238,7 @@ for item in available:
                         vRel_tipo,
                         vRel_tipo_codigo,
                         vRel_acompanha,
-                        vRel_texto]
+                        vRel_link]
         
 
         votos_PV_relator.append(vRel_dados + 
@@ -233,6 +251,140 @@ for item in available:
         #     teste.append(votos_complementares)
         
         if len_votos_complementares > 0:
+            
+                # redefine variáveis:
+            v1_index = 'na'
+            v1_desc = 'na'
+            v1_id = 'na'
+            v1_ant = 'na'
+            v1_julg = 'na'
+            v1_data = 'na'
+            v1_tipo = 'na'
+            v1_tipo_codigo = 'na'
+            v1_acompanha = 'na'
+            v1_texto = 'na'
+            
+            v2_index = 'na'
+            v2_desc = 'na'
+            v2_id = 'na'
+            v2_ant = 'na'
+            v2_julg = 'na'
+            v2_data = 'na'
+            v2_tipo = 'na'
+            v2_tipo_codigo = 'na'
+            v2_acompanha = 'na'
+            v2_texto = 'na'
+            
+            v3_index = 'na'
+            v3_desc = 'na'
+            v3_id = 'na'
+            v3_ant = 'na'
+            v3_julg = 'na'
+            v3_data = 'na'
+            v3_tipo = 'na'
+            v3_tipo_codigo = 'na'
+            v3_acompanha = 'na'
+            v3_texto = 'na'
+            
+            v4_index = 'na'
+            v4_desc = 'na'
+            v4_id = 'na'
+            v4_ant = 'na'
+            v4_julg = 'na'
+            v4_data = 'na'
+            v4_tipo = 'na'
+            v4_tipo_codigo = 'na'
+            v4_acompanha = 'na'
+            v4_texto = 'na'
+            
+            v5_index = 'na'
+            v5_desc = 'na'
+            v5_id = 'na'
+            v5_ant = 'na'
+            v5_julg = 'na'
+            v5_data = 'na'
+            v5_tipo = 'na'
+            v5_tipo_codigo = 'na'
+            v5_acompanha = 'na'
+            v5_texto = 'na'
+            
+            v6_index = 'na'
+            v6_desc = 'na'
+            v6_id = 'na'
+            v6_ant = 'na'
+            v6_julg = 'na'
+            v6_data = 'na'
+            v6_tipo = 'na'
+            v6_tipo_codigo = 'na'
+            v6_acompanha = 'na'
+            v6_texto = 'na'
+            
+            v7_index = 'na'
+            v7_desc = 'na'
+            v7_id = 'na'
+            v7_ant = 'na'
+            v7_julg = 'na'
+            v7_data = 'na'
+            v7_tipo = 'na'
+            v7_tipo_codigo = 'na'
+            v7_acompanha = 'na'
+            v7_texto = 'na'
+            
+            v8_index = 'na'
+            v8_desc = 'na'
+            v8_id = 'na'
+            v8_ant = 'na'
+            v8_julg = 'na'
+            v8_data = 'na'
+            v8_tipo = 'na'
+            v8_tipo_codigo = 'na'
+            v8_acompanha = 'na'
+            v8_texto = 'na'
+            
+            v9_index = 'na'
+            v9_desc = 'na'
+            v9_id = 'na'
+            v9_ant = 'na'
+            v9_julg = 'na'
+            v9_data = 'na'
+            v9_tipo = 'na'
+            v9_tipo_codigo = 'na'
+            v9_acompanha = 'na'
+            v9_texto = 'na'
+            
+            v10_index = 'na'
+            v10_desc = 'na'
+            v10_id = 'na'
+            v10_ant = 'na'
+            v10_julg = 'na'
+            v10_data = 'na'
+            v10_tipo = 'na'
+            v10_tipo_codigo = 'na'
+            v10_acompanha = 'na'
+            v10_texto = 'na'
+            
+            v11_index = 'na'
+            v11_desc = 'na'
+            v11_id = 'na'
+            v11_ant = 'na'
+            v11_julg = 'na'
+            v11_data = 'na'
+            v11_tipo = 'na'
+            v11_tipo_codigo = 'na'
+            v11_acompanha = 'na'
+            v11_texto = 'na'
+
+            v12_index = 'na'
+            v12_desc = 'na'
+            v12_id = 'na'
+            v12_ant = 'na'
+            v12_julg = 'na'
+            v12_data = 'na'
+            v12_tipo = 'na'
+            v12_tipo_codigo = 'na'
+            v12_acompanha = 'na'
+            v12_texto = 'na'
+                    
             for voto in votos_complementares:
                 vc_index = vc_index + 1
                 n_voto = int(dsl.extract(voto,'',','))-1
@@ -247,13 +399,13 @@ for item in available:
                 voto_texto = dsl.limpar(dsl.extract(voto,'"textos" : ','}'))
                 if voto_texto == '[ ]':
                     voto_texto = 'NA'
+                    voto_desc = 'NA'
                 else:
-                    voto_texto = voto_texto.replace('",  "descricao','')
-                    voto_texto = voto_texto.replace('",  "link','')
-                    voto_texto = voto_texto.strip('"')
-                    voto_texto = voto_texto.split('" : "')[1:]
+                    voto_desc = dsl.extract(voto_texto,'"descricao" : "','"')
+                    voto_texto = dsl.extract(votoRelator,'"link" : "','"')
                 
                 voto_complementar_dados =     [vc_index,
+                                               voto_desc,
                                               n_voto,
                                               votoAntecipado,
                                               julgador,
@@ -265,134 +417,15 @@ for item in available:
                 
                 votos_PV.append(voto_complementar_dados + 
                                 vRel_dados + 
-                                df_original[:12] + 
-                                df_original [13:] + 
+                                df_original[:13] + 
+                                df_original [14:] + 
                                 lista_dados)
                 # define variáveis votos complementares
-                        
-                v1_index = 'na'
-                v1_index = 'na'
-                v1_id = 'na'
-                v1_ant = 'na'
-                v1_julg = 'na'
-                v1_data = 'na'
-                v1_tipo = 'na'
-                v1_tipo_codigo = 'na'
-                v1_acompanha = 'na'
-                v1_texto = 'na'
                 
-                v2_index = 'na'
-                v2_id = 'na'
-                v2_ant = 'na'
-                v2_julg = 'na'
-                v2_data = 'na'
-                v2_tipo = 'na'
-                v2_tipo_codigo = 'na'
-                v2_acompanha = 'na'
-                v2_texto = 'na'
-                
-                v3_index = 'na'
-                v3_id = 'na'
-                v3_ant = 'na'
-                v3_julg = 'na'
-                v3_data = 'na'
-                v3_tipo = 'na'
-                v3_tipo_codigo = 'na'
-                v3_acompanha = 'na'
-                v3_texto = 'na'
-                
-                v4_index = 'na'
-                v4_id = 'na'
-                v4_ant = 'na'
-                v4_julg = 'na'
-                v4_data = 'na'
-                v4_tipo = 'na'
-                v4_tipo_codigo = 'na'
-                v4_acompanha = 'na'
-                v4_texto = 'na'
-                
-                v5_index = 'na'
-                v5_id = 'na'
-                v5_ant = 'na'
-                v5_julg = 'na'
-                v5_data = 'na'
-                v5_tipo = 'na'
-                v5_tipo_codigo = 'na'
-                v5_acompanha = 'na'
-                v5_texto = 'na'
-                
-                v6_index = 'na'
-                v6_id = 'na'
-                v6_ant = 'na'
-                v6_julg = 'na'
-                v6_data = 'na'
-                v6_tipo = 'na'
-                v6_tipo_codigo = 'na'
-                v6_acompanha = 'na'
-                v6_texto = 'na'
-                
-                v7_index = 'na'
-                v7_id = 'na'
-                v7_ant = 'na'
-                v7_julg = 'na'
-                v7_data = 'na'
-                v7_tipo = 'na'
-                v7_tipo_codigo = 'na'
-                v7_acompanha = 'na'
-                v7_texto = 'na'
-                
-                v8_index = 'na'
-                v8_id = 'na'
-                v8_ant = 'na'
-                v8_julg = 'na'
-                v8_data = 'na'
-                v8_tipo = 'na'
-                v8_tipo_codigo = 'na'
-                v8_acompanha = 'na'
-                v8_texto = 'na'
-                
-                v9_index = 'na'
-                v9_id = 'na'
-                v9_ant = 'na'
-                v9_julg = 'na'
-                v9_data = 'na'
-                v9_tipo = 'na'
-                v9_tipo_codigo = 'na'
-                v9_acompanha = 'na'
-                v9_texto = 'na'
-                
-                v10_index = 'na'
-                v10_id = 'na'
-                v10_ant = 'na'
-                v10_julg = 'na'
-                v10_data = 'na'
-                v10_tipo = 'na'
-                v10_tipo_codigo = 'na'
-                v10_acompanha = 'na'
-                v10_texto = 'na'
-                
-                v11_index = 'na'
-                v11_id = 'na'
-                v11_ant = 'na'
-                v11_julg = 'na'
-                v11_data = 'na'
-                v11_tipo = 'na'
-                v11_tipo_codigo = 'na'
-                v11_acompanha = 'na'
-                v11_texto = 'na'
-
-                v12_index = 'na'
-                v12_id = 'na'
-                v12_ant = 'na'
-                v12_julg = 'na'
-                v12_data = 'na'
-                v12_tipo = 'na'
-                v12_tipo_codigo = 'na'
-                v12_acompanha = 'na'
-                v12_texto = 'na'
                 
                 if vc_index == 1:
                     [v1_index,
+                     v1_desc,
                       v1_id, 
                       v1_ant, 
                       v1_julg,
@@ -403,6 +436,7 @@ for item in available:
                       v1_texto] = voto_complementar_dados
                 if vc_index == 2:
                     [v2_index,
+                     v2_desc,
                       v2_id, 
                       v2_ant, 
                       v2_julg,
@@ -413,6 +447,7 @@ for item in available:
                       v2_texto] = voto_complementar_dados
                 if vc_index == 3:
                     [v3_index,
+                     v3_desc,
                       v3_id, 
                       v3_ant, 
                       v3_julg,
@@ -423,6 +458,7 @@ for item in available:
                       v3_texto] = voto_complementar_dados
                 if vc_index == 4:
                     [v4_index,
+                     v4_desc,
                       v4_id, 
                       v4_ant, 
                       v4_julg,
@@ -433,6 +469,7 @@ for item in available:
                       v4_texto] = voto_complementar_dados
                 if vc_index == 5:
                     [v5_index,
+                     v4_desc,
                       v5_id, 
                       v5_ant, 
                       v5_julg,
@@ -443,6 +480,7 @@ for item in available:
                       v5_texto] = voto_complementar_dados
                 if vc_index == 6:
                     [v6_index,
+                     v6_desc,
                       v6_id, 
                       v6_ant, 
                       v6_julg,
@@ -453,6 +491,7 @@ for item in available:
                       v6_texto] = voto_complementar_dados
                 if vc_index == 7:
                     [v7_index,
+                     v7_desc,
                       v7_id, 
                       v7_ant, 
                       v7_julg,
@@ -463,6 +502,7 @@ for item in available:
                       v7_texto] = voto_complementar_dados
                 if vc_index == 8:
                     [v8_index,
+                     v8_desc,
                       v8_id, 
                       v8_ant, 
                       v8_julg,
@@ -473,6 +513,7 @@ for item in available:
                       v8_texto] = voto_complementar_dados
                 if vc_index == 9:
                     [v9_index,
+                     v9_desc,
                       v9_id, 
                       v9_ant, 
                       v9_julg,
@@ -483,6 +524,7 @@ for item in available:
                       v9_texto] = voto_complementar_dados
                 if vc_index == 10:
                     [v10_index,
+                     v10_desc,
                       v10_id, 
                       v10_ant, 
                       v10_julg,
@@ -493,6 +535,7 @@ for item in available:
                       v10_texto] = voto_complementar_dados
                 if vc_index == 11:
                     [v11_index,
+                     v11_desc,
                       v11_id, 
                       v11_ant, 
                       v11_julg,
@@ -503,6 +546,7 @@ for item in available:
                       v11_texto] = voto_complementar_dados
                 if vc_index == 12:
                     [v12_index,
+                     v12_desc,
                       v12_id, 
                       v12_ant, 
                       v12_julg,
@@ -512,8 +556,9 @@ for item in available:
                       v12_acompanha,
                       v12_texto] = voto_complementar_dados
     
-                votos_ordem = [
+            votos_ordem = [
                             v1_index,
+                            v1_desc,
                             v1_id,
                             v1_ant,
                             v1_julg,
@@ -524,6 +569,7 @@ for item in available:
                             v1_texto,
                             
                             v2_index,
+                            v2_desc,
                             v2_id,
                             v2_ant,
                             v2_julg,
@@ -534,6 +580,7 @@ for item in available:
                             v2_texto,
                             
                             v3_index,
+                            v3_desc,
                             v3_id,
                             v3_ant,
                             v3_julg,
@@ -544,6 +591,7 @@ for item in available:
                             v3_texto,
                             
                             v4_index,
+                            v4_desc,
                             v4_id,
                             v4_ant,
                             v4_julg,
@@ -554,6 +602,7 @@ for item in available:
                             v4_texto,
                             
                             v5_index,
+                            v5_desc,
                             v5_id,
                             v5_ant,
                             v5_julg,
@@ -564,6 +613,7 @@ for item in available:
                             v5_texto,
                             
                             v6_index,
+                            v6_desc,
                             v6_id,
                             v6_ant,
                             v6_julg,
@@ -574,6 +624,7 @@ for item in available:
                             v6_texto,
                             
                             v7_index,
+                            v7_desc,
                             v7_id,
                             v7_ant,
                             v7_julg,
@@ -584,6 +635,7 @@ for item in available:
                             v7_texto,
                             
                             v8_index,
+                            v8_desc,
                             v8_id,
                             v8_ant,
                             v8_julg,
@@ -594,6 +646,7 @@ for item in available:
                             v8_texto,
                             
                             v9_index,
+                            v9_desc,
                             v9_id,
                             v9_ant,
                             v9_julg,
@@ -604,6 +657,7 @@ for item in available:
                             v9_texto,
                             
                             v10_index,
+                            v10_desc,
                             v10_id,
                             v10_ant,
                             v10_julg,
@@ -614,6 +668,7 @@ for item in available:
                             v10_texto,
                             
                             v11_index,
+                            v11_desc,
                             v11_id,
                             v11_ant,
                             v11_julg,
@@ -624,6 +679,7 @@ for item in available:
                             v11_texto,
                             
                             v12_index,
+                            v12_desc,
                             v12_id,
                             v12_ant,
                             v12_julg,
@@ -635,16 +691,17 @@ for item in available:
                                 ]
 
 
-        processos_PV.append(df_original[:12] + 
-                            df_original[13:] + 
-                            lista_dados+
-                            vRel_dados+
-                            votos_ordem)
+            processos_PV.append(df_original[:13] + 
+                                df_original[14:] + 
+                                lista_dados+
+                                vRel_dados+
+                                votos_ordem)
 
 
 
 dfvotos = pd.DataFrame(votos_PV , columns=[  
                                         'voto_index',
+                                        'voto_desc',
                                         'n_voto',
                                         'votoAntecipado',
                                         'julgador',
@@ -653,7 +710,9 @@ dfvotos = pd.DataFrame(votos_PV , columns=[
                                         'tipoVoto_codigo',
                                         'acompanhandoMinistro',
                                         'voto_texto',
+                                        
                                         'vRel_index',
+                                        'vRel_desc',
                                         'vRel_id',
                                         'vRel_ant',
                                         'vRel_julg',
@@ -661,20 +720,22 @@ dfvotos = pd.DataFrame(votos_PV , columns=[
                                         'vRel_tipo',
                                         'vRel_tipo_codigo',
                                         'vRel_acompanha',
-                                        'vRel_texto',
+                                        'vRel_link',
                                         
+                                        'incidente',
                                         'identificador',
                                         'identificacao',
                                         'identCompleta',
                                         'principal',
                                         'pai',
                                         'tipoOIncidente',  
-                                        'incidente',
                                         'classe',
                                         'numero',
-                                        'string',
+                                        'incidente_nome',
                                         'procedencia',
                                         'partes',
+                                        'autor_tipo',
+                                        
                                         'orgao',
                                         'data_inicial',
                                         'data_final',
@@ -685,6 +746,8 @@ dfvotos = pd.DataFrame(votos_PV , columns=[
                                         'lista_desc',
                                         'lista_ordem',
                                         'lista_quantidade',
+                                        
+
                                         
                                         'lista_index',
                                         'idLista',
@@ -719,22 +782,19 @@ dfvotos = pd.DataFrame(votos_PV , columns=[
 
                                         ])
 
-dfvotos.to_csv(DATA_PATH/'votos_PV.txt', index=False)
-
-
-
-dfprocessos = pd.DataFrame(processos_PV, columns=[ 'identificador',
+dfprocessos = pd.DataFrame(processos_PV, columns=[ 'incidente',
+                                                  'identificador',
                                             'identificacao',
                                             'identCompleta',
                                             'principal',
                                             'pai',
                                             'tipoOIncidente',  
-                                            'incidente',
                                             'classe',
                                             'numero',
                                             'string',
                                             'procedencia',
                                             'partes',
+                                            'autor_tipo',   
                                             'orgao',
                                             'data_inicial',
                                             'data_final',
@@ -745,7 +805,6 @@ dfprocessos = pd.DataFrame(processos_PV, columns=[ 'identificador',
                                             'lista_desc',
                                             'lista_ordem',
                                             'lista_quantidade',
-                                            
                                             'lista_index',
                                             'idLista',
                                             'nomeLista',
@@ -785,9 +844,11 @@ dfprocessos = pd.DataFrame(processos_PV, columns=[ 'identificador',
                                             'vRel_tipo',
                                             'vRel_tipo_codigo',
                                             'vRel_acompanha',
-                                            'vRel_texto',
+                                            'vRel_desc',
+                                            'vRel_link',
                                             
                                             'v1_index',
+                                            'v1_desc',
                                             'v1_id',
                                             'v1_ant',
                                             'v1_julg',
@@ -797,6 +858,7 @@ dfprocessos = pd.DataFrame(processos_PV, columns=[ 'identificador',
                                             'v1_acompanha',
                                             'v1_texto',
                                             'v2_index',
+                                            'v3_desc',
                                             'v2_id',
                                             'v2_ant',
                                             'v2_julg',
@@ -806,6 +868,7 @@ dfprocessos = pd.DataFrame(processos_PV, columns=[ 'identificador',
                                             'v2_acompanha',
                                             'v2_texto',
                                             'v3_index',
+                                            'v3_desc',
                                             'v3_id',
                                             'v3_ant',
                                             'v3_julg',
@@ -815,6 +878,7 @@ dfprocessos = pd.DataFrame(processos_PV, columns=[ 'identificador',
                                             'v3_acompanha',
                                             'v3_texto',
                                             'v4_index',
+                                            'v4_desc',
                                             'v4_id',
                                             'v4_ant',
                                             'v4_julg',
@@ -824,6 +888,7 @@ dfprocessos = pd.DataFrame(processos_PV, columns=[ 'identificador',
                                             'v4_acompanha',
                                             'v4_texto',
                                             'v5_index',
+                                            'v5_desc',
                                             'v5_id',
                                             'v5_ant',
                                             'v5_julg',
@@ -833,6 +898,7 @@ dfprocessos = pd.DataFrame(processos_PV, columns=[ 'identificador',
                                             'v5_acompanha',
                                             'v5_texto',
                                             'v6_index',
+                                            'v6_desc',
                                             'v6_id',
                                             'v6_ant',
                                             'v6_julg',
@@ -842,6 +908,7 @@ dfprocessos = pd.DataFrame(processos_PV, columns=[ 'identificador',
                                             'v6_acompanha',
                                             'v6_texto',
                                             'v7_index',
+                                            'v7_desc',
                                             'v7_id',
                                             'v7_ant',
                                             'v7_julg',
@@ -851,6 +918,7 @@ dfprocessos = pd.DataFrame(processos_PV, columns=[ 'identificador',
                                             'v7_acompanha',
                                             'v7_texto',
                                             'v8_index',
+                                            'v8_desc',
                                             'v8_id',
                                             'v8_ant',
                                             'v8_julg',
@@ -860,6 +928,7 @@ dfprocessos = pd.DataFrame(processos_PV, columns=[ 'identificador',
                                             'v8_acompanha',
                                             'v8_texto',
                                             'v9_index',
+                                            'v9_desc',
                                             'v9_id',
                                             'v9_ant',
                                             'v9_julg',
@@ -869,6 +938,7 @@ dfprocessos = pd.DataFrame(processos_PV, columns=[ 'identificador',
                                             'v9_acompanha',
                                             'v9_texto',
                                             'v10_index',
+                                            'v10_desc',
                                             'v10_id',
                                             'v10_ant',
                                             'v10_julg',
@@ -878,6 +948,7 @@ dfprocessos = pd.DataFrame(processos_PV, columns=[ 'identificador',
                                             'v10_acompanha',
                                             'v10_texto',
                                             'v11_index',
+                                            'v11_desc',
                                             'v11_id',
                                             'v11_ant',
                                             'v11_julg',
@@ -887,6 +958,7 @@ dfprocessos = pd.DataFrame(processos_PV, columns=[ 'identificador',
                                             'v11_acompanha',
                                             'v11_texto',
                                             'v12_index',
+                                            'v12_desc',
                                             'v12_id',
                                             'v12_ant',
                                             'v12_julg',
@@ -894,9 +966,12 @@ dfprocessos = pd.DataFrame(processos_PV, columns=[ 'identificador',
                                             'v12_tipo',
                                             'v12_tipo_codigo',
                                             'v12_acompanha',
-                                            'v12_texto'])
-dfprocessos.to_csv(DATA_PATH/'processos_PV.txt', index=False)
+                                            'v12_texto'
+                                            ])
 
+print ('gravando csv')
+dfprocessos.to_csv('processos_PV.txt', index=False)
+dfvotos.to_csv('votos_PV.txt', index=False)
 
 print('gravando_excel')
 dfprocessos.to_excel(DATA_PATH/'processos_PV.xlsx', index=False)
