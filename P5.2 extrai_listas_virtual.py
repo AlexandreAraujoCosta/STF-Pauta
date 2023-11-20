@@ -10,7 +10,7 @@ import urllib3
 import pandas as pd
 
 import dsl
-from helpers import DATA_PATH
+from helpers import DATA_PATH, check_for_captcha
 urllib3.disable_warnings()
 
 source = DATA_PATH/'pautas_virtuais_dados_processados.txt'
@@ -70,21 +70,8 @@ for lista in lista_buscar[start:]:
   
     dados = dsl.get(url+lista_id)
 
-    if 'CAPTCHA' in dados:
-        captcha = 'captcha'
-        time.sleep(300)
-        dados = dsl.get(url)
-        if 'CAPTCHA' in dados:
-            captcha = 'captcha'
-            time.sleep(600)
-            dados = dsl.get(url)
-        
-    else:
-        captcha = 'nao-captcha'
-        
+    print (str(n) + ' de ' + str(len(lista_buscar) - start) + ' - ' + check_for_captcha(dados) + ' - ' + dados[:50])
     dsl.esperar(151,120,n)
-    
-    print (str(n) + ' de ' + str(len(lista_buscar) - start) + ' - ' + captcha + ' - ' + dados[:50])
     
     if dados == '[]':
         processos = ['lista vazia']
@@ -115,18 +102,6 @@ for lista in lista_buscar[start:]:
         
         # busca dados de cada processo
         dados2 = dsl.get(url2+incidente)
-    
-        if 'CAPTCHA' in dados2:
-            captcha = 'captcha'
-            time.sleep(300)
-            dados2 = dsl.get(url)
-            if 'CAPTCHA' in dados2:
-                captcha = 'captcha'
-                time.sleep(600)
-                dados2 = dsl.get(url)
-            
-        else:
-            captcha = 'nao-captcha'
             
         identificador   = dsl.extract(dados2,'"id" : ',',')
         identificacao   = dsl.extract(dados2,'"identificacao" : "','"')
@@ -140,20 +115,7 @@ for lista in lista_buscar[start:]:
             dados3 = 'na'
         else:
             dados3 = dsl.get(url3+identificador)
-    
-        if 'CAPTCHA' in dados3:
-            captcha = 'captcha'
-            time.sleep(300)
-            dados3 = dsl.get(url)
-            if 'CAPTCHA' in dados3:
-                captcha = 'captcha'
-                time.sleep(600)
-                dados3 = dsl.get(url)
             
-        else:
-            captcha = 'nao-captcha'
-            
-    
         dados_processo = [identificador,
                           identificacao,
                           identCompleta,

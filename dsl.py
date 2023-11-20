@@ -33,7 +33,8 @@ def get(url, retries=3, wait=300):
         html = requests.get(url, headers=user_agent, verify=False)
         html.encoding = "utf-8"
         html = html.text
-        if 'CAPTCHA' in dados:
+        # if 'CAPTCHA' in dados or 'The page cannot be displayed because an internal server error has occurred' in dados:
+        if 'CAPTCHA' in html:
             # try again
             tries += 1
             continue

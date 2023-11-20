@@ -10,7 +10,7 @@ import urllib3
 import pandas as pd
 
 import dsl
-from helpers import DATA_PATH
+from helpers import DATA_PATH, check_for_captcha
 
 urllib3.disable_warnings()
 
@@ -25,22 +25,13 @@ for url in virtuais:
     n = n + 1
     url=url[0]
     dados = dsl.get(url)
-    # if 'CAPTCHA' in dados or 'The page cannot be displayed because an internal server error has occurred' in dados:
     if 'CAPTCHA' in dados:
-        captcha = 'captcha'
-        time.sleep(300)
-        dados = dsl.get(url)
-        if 'CAPTCHA' in dados or 'The page cannot be displayed because an internal server error has occurred' in dados:
-            captcha = 'captcha'
-            time.sleep(600)
-            dados = dsl.get(url)
-        
+        captcha = 'captcha'   
     else:
         captcha = 'nao-captcha'
+    print (str(n) + ' de ' + str(len(virtuais)) + ' - ' + check_for_captcha(dados) + ' - ' + dados[:50])
         
     dsl.esperar(200,300,n)
-    
-    print (str(n) + ' de ' + str(len(virtuais)) + ' - ' + captcha + ' - ' + dados[:50])
     
     date = dsl.extract(dados,'"dataInicio":"','"')
     tipo = dsl.extract(dados,'"tipo":"','"')
