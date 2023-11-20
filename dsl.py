@@ -4,6 +4,8 @@ import time
 import requests
 from unicodedata import normalize
 
+from helpers import check_for_captcha
+
 
 ###revisto
 
@@ -34,7 +36,7 @@ def get(url, retries=3, wait=300):
         html.encoding = "utf-8"
         html = html.text
         # if 'CAPTCHA' in dados or 'The page cannot be displayed because an internal server error has occurred' in dados:
-        if 'CAPTCHA' in html:
+        if check_for_captcha == "captcha":
             # try again
             tries += 1
             continue
