@@ -56,14 +56,7 @@ source_list = ['processos_julgados_virtual_TP500.txt',
 #                  'lista_ordem',
 #                  'lista_quantidade']
 
-<<<<<<< HEAD
-for n in range(len(source_list)-1):
-    item = source_list[n-1]
-    dados = pd.read_csv(DATA_PATH/item, dtype={"teste": str})
-    base = pd.concat([base,dados])
-=======
 base = pd.read_csv(source_list.pop(0),dtype=str)
->>>>>>> main
 
 for item in (source_list):
     print (item)
