@@ -5,16 +5,18 @@ Created on Sun Nov 12 16:54:44 2023
 @author: Alexandre Araújo Costa
 """
 
-import dsl
-import pandas as pd
 import time
-
 import urllib3
+import pandas as pd
+
+import dsl
+from helpers import DATA_PATH
+
 urllib3.disable_warnings()
 
 # processa presenciais
 
-virtuais = pd.read_csv('pautas_virtuais_urls.txt', dtype={"teste": str}).values.tolist()
+virtuais = pd.read_csv(DATA_PATH/'pautas_virtuais_urls.txt', dtype={"teste": str}).values.tolist()
 
 virtuais_dados = []
 n = 0
@@ -51,4 +53,4 @@ for url in virtuais:
                               ])
     
 df = pd.DataFrame(virtuais_dados, columns=['dados',"data",'tipo','dados'])
-df.to_csv('pautas_virtuais_dados.txt', index=False)
+df.to_csv(DATA_PATH/'pautas_virtuais_dados.txt', index=False)

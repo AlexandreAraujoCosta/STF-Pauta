@@ -7,6 +7,8 @@ Created on Tue Nov 14 18:16:55 2023
 
 import pandas as pd
 
+from helpers import DATA_PATH
+
 arquivo_retornar = 'total.csv'
 
 source_list = ['processos_julgados_virtual_TP500.txt',
@@ -29,8 +31,8 @@ base = pd.read_csv(source_list[0], dtype={"teste": str})
 
 for n in range(len(source_list)-1):
     item = source_list[n-1]
-    dados = pd.read_csv(item, dtype={"teste": str})
+    dados = pd.read_csv(DATA_PATH/item, dtype={"teste": str})
     base = pd.concat([base,dados])
 
 
-base.to_csv(arquivo_retornar, index=False)
+base.to_csv(DATA_PATH/arquivo_retornar, index=False)

@@ -5,10 +5,12 @@ Created on Sun Nov 12 10:42:59 2023
 @author: Alexandre Araújo Costa
 """
 
-import dsl
+import urllib3
 import pandas as pd
 
-import urllib3
+
+import dsl
+from helpers import DATA_PATH
 urllib3.disable_warnings()
 
 origem = 'P1r pautas_dados.txt'
@@ -17,7 +19,7 @@ pautas_presenciais_lista = []
 pautas_presenciais_urls = []
 pautas_virtuais_urls = []
 
-dados = pd.read_csv(origem, dtype={"teste": str}).values.tolist()
+dados = pd.read_csv(DATA_PATH/origem, dtype={"teste": str}).values.tolist()
 
 # separa sessões virtuais e presenciais
 for item in dados:
@@ -84,7 +86,7 @@ for item in pautas_virtuais_lista:
 
 # grava arquivos com listas de url
 df = pd.DataFrame(pautas_virtuais_urls, columns=["url"])
-df.to_csv('pautas_virtuais_urls.txt', index=False)
+df.to_csv(DATA_PATH/'pautas_virtuais_urls.txt', index=False)
 
 df2 = pd.DataFrame(pautas_presenciais_urls, columns=["url"])
-df2.to_csv('pautas_presenciais_urls.txt', index=False)
+df2.to_csv(DATA_PATH/'pautas_presenciais_urls.txt', index=False)

@@ -5,16 +5,18 @@ Created on Sun Nov 12 16:54:44 2023
 @author: Alexandre Araújo Costa
 """
 
-import dsl
-import pandas as pd
 import time
-
 import urllib3
+import pandas as pd
+
+import dsl
+from helpers import DATA_PATH
+
 urllib3.disable_warnings()
 
 # processa presenciais
 
-presenciais = pd.read_csv('pautas_presenciais_urls.txt', dtype={"teste": str}).values.tolist()
+presenciais = pd.read_csv(DATA_PATH/'pautas_presenciais_urls.txt', dtype={"teste": str}).values.tolist()
 
 presenciais_dados = []
 presenciais_vazias = []
@@ -58,7 +60,7 @@ for url in presenciais:
         presenciais_dados.append(dados_a_gravar)
     
 df = pd.DataFrame(presenciais_dados, columns=['dados',"data",'tipo','colegiados'])
-df.to_csv('pautas_presenciais_dados.txt', index=False)
+df.to_csv(DATA_PATH/'pautas_presenciais_dados.txt', index=False)
 
 df2 = pd.DataFrame(presenciais_vazias, columns=['dados',"data",'tipo','colegiados'])
-df2.to_csv('pautas_presenciais_vazias.txt', index=False)
+df2.to_csv(DATA_PATH/'pautas_presenciais_vazias.txt', index=False)

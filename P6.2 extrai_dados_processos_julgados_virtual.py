@@ -6,10 +6,12 @@ Created on Sun Nov 12 18:11:17 2023
 """
 
 import pandas as pd
+
 import dsl
+from helpers import DATA_PATH
 
 dados_a_gravar = []
-source = 'total.csv'
+source = DATA_PATH/'total.csv'
 
 dados_df    = pd.read_csv(source, dtype={"teste": str})
 dados_lista = dados_df.values.tolist()
@@ -717,7 +719,7 @@ dfvotos = pd.DataFrame(votos_PV , columns=[
 
                                         ])
 
-dfvotos.to_csv('votos_PV.txt', index=False)
+dfvotos.to_csv(DATA_PATH/'votos_PV.txt', index=False)
 
 
 
@@ -893,9 +895,9 @@ dfprocessos = pd.DataFrame(processos_PV, columns=[ 'identificador',
                                             'v12_tipo_codigo',
                                             'v12_acompanha',
                                             'v12_texto'])
-dfprocessos.to_csv('processos_PV.txt', index=False)
+dfprocessos.to_csv(DATA_PATH/'processos_PV.txt', index=False)
 
 
 print('gravando_excel')
-dfprocessos.to_excel('processos_PV.xlsx', index=False)
-dfvotos.to_excel('votos_PV.xlsx', index=False)
+dfprocessos.to_excel(DATA_PATH/'processos_PV.xlsx', index=False)
+dfvotos.to_excel(DATA_PATH/'votos_PV.xlsx', index=False)

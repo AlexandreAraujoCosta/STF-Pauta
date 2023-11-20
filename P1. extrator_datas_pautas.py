@@ -5,10 +5,11 @@ Created on Sat Nov 11 22:43:11 2023
 @author: Alexandre Araújo Costa
 """
 
-import dsl
+import urllib3
 import pandas as pd
 
-import urllib3
+import dsl
+from helpers import DATA_PATH
 urllib3.disable_warnings()
 
 inicio = 2003
@@ -45,4 +46,4 @@ df = pd.DataFrame(processos_pautados, columns=['ano',
                                                'mes',
                                                'url',
                                                'dados'])
-df.to_csv('P1r pautas_dados.txt', index=False)
+df.to_csv(DATA_PATH/'P1r pautas_dados.txt', index=False)
