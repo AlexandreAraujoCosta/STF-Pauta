@@ -29,6 +29,20 @@ def get (url):
     html = requests.get(url, headers = user_agent, verify=False)
     html.encoding = 'utf-8'
     html = html.text
+    if 'CAPTCHA' in html:
+        for n in range(300):
+            time.sleep(1)
+            print ('espera de '+ str(300-n) + ' segundos')
+        html = requests.get(url, headers = user_agent, verify=False)
+        html.encoding = 'utf-8'
+        html = html.text
+        if 'CAPTCHA' in html:
+            for n in range(600):
+                time.sleep(1)
+                print ('espera de '+ str(600-n) + ' segundos')
+            html = requests.get(url, headers = user_agent, verify=False)
+            html.encoding = 'utf-8'
+            html = html.text
     return html
 
 def get2 (url):
