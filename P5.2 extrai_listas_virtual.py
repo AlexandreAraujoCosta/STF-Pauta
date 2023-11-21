@@ -5,14 +5,15 @@ Created on Sun Nov 12 16:54:44 2023
 @author: Alexandre Araújo Costa
 """
 
-import dsl
-import pandas as pd
 import time
-
 import urllib3
+import pandas as pd
+
+import dsl
+from helpers import DATA_PATH, check_for_captcha
 urllib3.disable_warnings()
 
-source = 'pautas_virtuais_dados_processados.txt'
+source = DATA_PATH/'pautas_virtuais_dados_processados.txt'
 url = 'https://portal.stf.jus.br/pauta/services/lista-service.asp?lista='
 url2 = 'https://sistemas.stf.jus.br/repgeral/votacao?sessaoVirtual='
 url3 = 'https://sistemas.stf.jus.br/repgeral/votacao?oi='

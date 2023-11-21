@@ -6,10 +6,12 @@ Created on Sun Nov 12 18:11:17 2023
 """
 
 import pandas as pd
+
 import dsl
+from helpers import DATA_PATH
 
 dados_a_gravar = []
-source = 'total.csv'
+source = DATA_PATH/'total.csv'
 
 dados_df    = pd.read_csv(source, dtype={"teste": str})
 dados_lista = dados_df.values.tolist()
@@ -792,8 +794,7 @@ dfprocessos = pd.DataFrame(processos_PV, columns=[ 'incidente',
                                             'string',
                                             'procedencia',
                                             'partes',
-                                            'autor_tipo',
-                                            
+                                            'autor_tipo',   
                                             'orgao',
                                             'data_inicial',
                                             'data_final',
@@ -804,8 +805,6 @@ dfprocessos = pd.DataFrame(processos_PV, columns=[ 'incidente',
                                             'lista_desc',
                                             'lista_ordem',
                                             'lista_quantidade',
-                                            
-                                            
                                             'lista_index',
                                             'idLista',
                                             'nomeLista',
@@ -970,11 +969,10 @@ dfprocessos = pd.DataFrame(processos_PV, columns=[ 'incidente',
                                             'v12_texto'
                                             ])
 
-
 print ('gravando csv')
 dfprocessos.to_csv('processos_PV.txt', index=False)
 dfvotos.to_csv('votos_PV.txt', index=False)
 
 print('gravando_excel')
-dfprocessos.to_excel('processos_PV.xlsx', index=False)
-dfvotos.to_excel('votos_PV.xlsx', index=False)
+dfprocessos.to_excel(DATA_PATH/'processos_PV.xlsx', index=False)
+dfvotos.to_excel(DATA_PATH/'votos_PV.xlsx', index=False)

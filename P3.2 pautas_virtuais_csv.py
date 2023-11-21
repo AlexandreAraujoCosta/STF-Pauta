@@ -5,16 +5,18 @@ Created on Sun Nov 12 16:54:44 2023
 @author: Alexandre Araújo Costa
 """
 
-import dsl
-import pandas as pd
 import time
-
 import urllib3
+import pandas as pd
+
+import dsl
+from helpers import DATA_PATH, check_for_captcha
+
 urllib3.disable_warnings()
 
 # processa presenciais
 
-virtuais = pd.read_csv('pautas_virtuais_urls.txt', dtype={"teste": str}).values.tolist()
+virtuais = pd.read_csv(DATA_PATH/'pautas_virtuais_urls.txt', dtype={"teste": str}).values.tolist()
 
 virtuais_dados = []
 n = 0
@@ -23,22 +25,13 @@ for url in virtuais:
     n = n + 1
     url=url[0]
     dados = dsl.get(url)
-    # if 'CAPTCHA' in dados or 'The page cannot be displayed because an internal server error has occurred' in dados:
     if 'CAPTCHA' in dados:
-        captcha = 'captcha'
-        time.sleep(300)
-        dados = dsl.get(url)
-        if 'CAPTCHA' in dados or 'The page cannot be displayed because an internal server error has occurred' in dados:
-            captcha = 'captcha'
-            time.sleep(600)
-            dados = dsl.get(url)
-        
+        captcha = 'captcha'   
     else:
         captcha = 'nao-captcha'
+    print (str(n) + ' de ' + str(len(virtuais)) + ' - ' + check_for_captcha(dados) + ' - ' + dados[:50])
         
     dsl.esperar(200,300,n)
-    
-    print (str(n) + ' de ' + str(len(virtuais)) + ' - ' + captcha + ' - ' + dados[:50])
     
     date = dsl.extract(dados,'"dataInicio":"','"')
     tipo = dsl.extract(dados,'"tipo":"','"')
@@ -51,4 +44,4 @@ for url in virtuais:
                               ])
     
 df = pd.DataFrame(virtuais_dados, columns=['dados',"data",'tipo','dados'])
-df.to_csv('pautas_virtuais_dados.txt', index=False)
+df.to_csv(DATA_PATH/'pautas_virtuais_dados.txt', index=False)

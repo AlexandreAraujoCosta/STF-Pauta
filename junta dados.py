@@ -7,6 +7,8 @@ Created on Tue Nov 14 18:16:55 2023
 
 import pandas as pd
 
+from helpers import DATA_PATH
+
 arquivo_retornar = 'total.csv'
 
 source_list = ['processos_julgados_virtual_TP500.txt',
@@ -63,4 +65,4 @@ for item in (source_list):
     
 # base.columns = [colunas]
 
-base.to_csv(arquivo_retornar, index=False)
+base.to_csv(DATA_PATH/arquivo_retornar, index=False)
