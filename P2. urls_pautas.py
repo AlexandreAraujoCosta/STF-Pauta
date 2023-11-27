@@ -19,13 +19,13 @@ pautas_presenciais_lista = []
 pautas_presenciais_urls = []
 pautas_virtuais_urls = []
 
-dados = pd.read_csv(DATA_PATH/origem, dtype={"teste": str}).values.tolist()
+origem_lista = pd.read_csv(DATA_PATH/origem, dtype={"teste": str}).values.tolist()
 
 # separa sessões virtuais e presenciais
-for item in dados:
+for item in origem_lista:
     pauta_presencial = 'NA'
     pauta_virtual = 'NA'
-    
+    dados = 'NA'
     
     mes = item[1]
     if int(mes)<10:
@@ -81,7 +81,8 @@ for item in pautas_presenciais_lista:
 # gera urls pautas virtuais
 for item in pautas_virtuais_lista:
     url = f'https://portal.stf.jus.br/pauta/services/calendario-service.asp?dados=sessao-virtual&inicio={item[1]}&fim={item[2]}'
-    pautas_virtuais_urls.append(url)
+    if url not in pautas_virtuais_urls:
+        pautas_virtuais_urls.append(url)
 
 
 # grava arquivos com listas de url

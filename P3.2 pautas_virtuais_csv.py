@@ -25,13 +25,10 @@ for url in virtuais:
     n = n + 1
     url=url[0]
     dados = dsl.get(url)
-    if 'CAPTCHA' in dados:
-        captcha = 'captcha'   
-    else:
-        captcha = 'nao-captcha'
+
     print (str(n) + ' de ' + str(len(virtuais)) + ' - ' + check_for_captcha(dados) + ' - ' + dados[:50])
         
-    dsl.esperar(200,300,n)
+    # dsl.esperar(200,300,n)
     
     date = dsl.extract(dados,'"dataInicio":"','"')
     tipo = dsl.extract(dados,'"tipo":"','"')
@@ -43,5 +40,5 @@ for url in virtuais:
                               colegiados
                               ])
     
-df = pd.DataFrame(virtuais_dados, columns=['dados',"data",'tipo','dados'])
+df = pd.DataFrame(virtuais_dados, columns=['dados',"data",'tipo','colegiados'])
 df.to_csv(DATA_PATH/'pautas_virtuais_dados.txt', index=False)

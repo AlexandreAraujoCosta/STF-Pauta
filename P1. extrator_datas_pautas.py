@@ -24,10 +24,11 @@ for n in range (fim-inicio+1):
     
     for mes in range (12):
         
-        if mes > 8:
-            month = str(mes+1)
+        mes = mes+1
+        if mes > 9:
+            month = str(mes)
         else:
-            month = '0' + str(mes+1)
+            month = '0' + str(mes)
             
         url = 'https://portal.stf.jus.br/pauta/services/calendario-service.asp?dados=calendarios&mes=' + month + '&ano=' + str(ano)
         

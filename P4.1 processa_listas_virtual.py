@@ -6,13 +6,11 @@ Created on Sun Nov 12 18:11:17 2023
 """
 
 import pandas as pd
-
 import dsl
-from helpers import DATA_PATH
 
 dados_a_gravar = []
 id_list = []
-source = DATA_PATH/'pautas_presenciais_dados.txt'
+source = 'pautas_presenciais_dados.txt'
 
 def processar_lista (listas_string):
     listas = listas_string.split('"idTipo":"')[1:]
@@ -74,7 +72,7 @@ for item in virtuais:
 
 df = pd.DataFrame(id_list, columns=['id_lista',
                                     'orgão'])
-df.to_csv(DATA_PATH/'lista_id_pautas_virtual.txt', index=False)
+df.to_csv('lista_id_pautas_virtual.txt', index=False)
 
 df = pd.DataFrame(dados_a_gravar, columns=['orgao',
                                     'data_inicial',
@@ -86,5 +84,5 @@ df = pd.DataFrame(dados_a_gravar, columns=['orgao',
                                     'lista_desc',
                                     'lista_ordem',
                                     'lista_quantidade'])
-df.to_csv(DATA_PATH/'dados_pautas_virtual.txt', index=False)
+df.to_csv('dados_pautas_virtual.txt', index=False)
 
