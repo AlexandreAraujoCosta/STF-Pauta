@@ -18,5 +18,8 @@ def load_json_from_zip(name):
 
 def save_json_to_zip(data, name):
     with zipfile.ZipFile(DATA_PATH / f"{name}.zip", "w") as z:
-        z.writestr(f"{name}.json", json.dumps(data, ensure_ascii=False, indent=4))
+        z.writestr(
+            f"{name}.json",
+            json.dumps(data, ensure_ascii=False, indent=4),
+        )
         z.testzip()
