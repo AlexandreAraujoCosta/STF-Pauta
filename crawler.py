@@ -1,9 +1,11 @@
 import time
+import json
+from pathlib import Path
 
 import requests
 
 import helpers
-from helpers import check_for_captcha
+from helpers import DATA_PATH
 
 
 def get(url, retries=3, wait=300):
@@ -15,7 +17,7 @@ def get(url, retries=3, wait=300):
         time.sleep(wait * trials)
         html = requests.get(url, headers=user_agent, verify=False)
         html.encoding = "utf-8"
-        if check_for_captcha(html.text):
+        if helpers.check_for_captcha(html.text):
             # try again
             trials += 1
             continue
@@ -99,13 +101,20 @@ def collect_votacoes_sois(sois):
                 continue
             ids_votacoes.add(vot["objetoIncidente"]["id"])
     helpers.save_json_to_zip(votacoes_proc, 'votacoes_proc')
+    return ids_votacoes
 
+
+def collect_info_votacoes(ids_votacoes):
     # coleta votacoes
     info_votacoes = list()
+    p = Path(DATA_PATH / "info_votacoes")
+    p.mkdir(parents=True, exist_ok=True)
     for id_votacao in ids_votacoes:
         try:
             info_vot = get_info_votacao(id_votacao)
-            info_votacoes.append(info_vot)
+            # save to json
+            with open(p / f"{id_votacao}.json", "w") as f:
+                json.dump(info_vot, f)
         except Exception as e:
             print("Erro ao coletar info votacao:", id_votacao, e)
             continue
