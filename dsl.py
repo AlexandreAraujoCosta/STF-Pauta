@@ -3,6 +3,7 @@ import requests
 import time
 import os
 from unicodedata import normalize
+import re
 
 
 ###revisto
@@ -374,6 +375,57 @@ def limpar_tudo (fonte):
     fonte = fonte.replace('|||','|')
     fonte = fonte.replace('||','|')
     fonte = fonte.strip('|')
+    
+    
+    fonte = fonte.replace('&Ccedil;','Ç')
+    fonte = fonte.replace('&ccedil;','ç')
+    fonte = fonte.replace('&Atilde;','Ã')
+    fonte = fonte.replace('&atilde;','ã')
+    fonte = fonte.replace('&Otilde;','Õ')
+    fonte = fonte.replace('&otilde;','õ')
+    
+    fonte = fonte.replace('&Eacute;','É')
+    fonte = fonte.replace('&eacute;','é')
+    fonte = fonte.replace('&Aacute;','Á')
+    fonte = fonte.replace('&aacute;','á')
+    fonte = fonte.replace('&Iacute;','Í')
+    fonte = fonte.replace('&iacute;','í')
+    fonte = fonte.replace('&Oacute;','Ó')
+    fonte = fonte.replace('&oacute;','ó')
+    fonte = fonte.replace('&Uacute;','Ú')
+    fonte = fonte.replace('&uacute;','ú')
+    
+    fonte = fonte.replace('&Ecirc;','Ê')
+    fonte = fonte.replace('&ecirc;','ê')
+    fonte = fonte.replace('&Acirc;','Â')
+    fonte = fonte.replace('&acirc;','â')
+    fonte = fonte.replace('&Ocirc;','Ô')
+    fonte = fonte.replace('&ocirc;','ô')
+    fonte = fonte.replace('&ordm;','º')
+    fonte = fonte.replace('&sect; ','§')
+    fonte = fonte.replace('&Agrave;','À')
+    fonte = fonte.replace('&agrave;','à')
+    fonte = fonte.replace('&ldquo;','"')
+    
+    fonte = fonte.strip('\r\n')
+    fonte = fonte.strip(',')
+    fonte = fonte.strip('null\n')
+    
+    fonte = re.sub('<[^<]+?>', '', fonte)
+    fonte = fonte.replace('&nbsp; ','')
+    fonte = fonte.replace('&nbsp;','')
+    
+    fonte = fonte.strip('"')
+    fonte = fonte.strip('\r\n')
+    fonte = fonte.strip(',')
+    fonte = fonte.strip('null\n')
+    fonte = fonte.strip('.')
+    fonte = fonte.strip('null\n')
+    
+    fonte = fonte.replace('\r\n',' ')
+    fonte = fonte.replace('  ',' ')
+    fonte = fonte.replace('  ',' ')
+    fonte = fonte.replace('  ',' ')
     
     return fonte
 

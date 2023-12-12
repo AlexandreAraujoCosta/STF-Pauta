@@ -10,7 +10,7 @@ import urllib3
 import pandas as pd
 
 import dsl
-from helpers import DATA_PATH, check_for_captcha
+from helpers import DATA_PATH
 urllib3.disable_warnings()
 
 source = DATA_PATH/'pautas_virtuais_dados_processados.txt'
@@ -129,7 +129,7 @@ for lista in lista_buscar[start:]:
         dados_oi0 = 'NA'
         dados = 'NA'
 
-
+        # extrai dados do processo principal, que tem cadeia = 'null'
         if '"cadeia":null' in processo:
         
             incidente = dsl.extract(processo,'','"')
@@ -152,7 +152,7 @@ for lista in lista_buscar[start:]:
             incidente_tipo = dsl.limpar(dsl.extract(dados2,'"tipoObjetoIncidente" : {','}'))
             dados_julgamento = dados2
         
-        # busca dados objeto incidente
+        # busca dados objeto incidente, que têm nomes específicos na cadeia
         else:
             
             incidente = dsl.extract(processo,'','"')
@@ -200,5 +200,5 @@ for lista in lista_buscar[start:]:
         
 
     
-df = pd.DataFrame(dados_a_gravar, columns = [colunas])
-df.to_csv('processos_julgados_virtual_TP_final.txt', index=False)
+# df = pd.DataFrame(dados_a_gravar, columns = [colunas])
+# df.to_csv('processos_julgados_virtual_TP_final.txt', index=False)

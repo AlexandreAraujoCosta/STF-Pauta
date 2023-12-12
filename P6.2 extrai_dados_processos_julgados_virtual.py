@@ -6,9 +6,11 @@ Created on Sun Nov 12 18:11:17 2023
 """
 
 import pandas as pd
+from datetime import date
 
 import dsl
 from helpers import DATA_PATH
+
 
 dados_a_gravar = []
 source = DATA_PATH/'total.csv'
@@ -26,7 +28,7 @@ available  = []
 outros = []
 votos_PV_relator = []
 votos_info = []
-teste =[]
+ateste =[]
 datas = []
 
 # dados_lista = dados_lista[10000:11111]
@@ -56,9 +58,20 @@ for n in range(len(dados_lista)):
         outros.append(dados_lista[n])
 
 ni = 0
-# available = available[124:125]
+
+available.sort()
+# available = available[2:7]
+
+
 
 for item in available:
+    processo_id = 'NA'
+    processo_ident = 'NA'
+    processo_ident_comp = 'NA'
+    processo_principal = 'NA'
+    processo_pai = 'NA'
+    processo_tipo = 'NA'
+    
     ni = ni +1
     df_original = item
     pv = item[13].split('"listasJulgamento" : [ ')
@@ -86,8 +99,9 @@ for item in available:
     processo_listas = pv1.split('"id" : ')[1:]
     len_processo_listas = len(processo_listas)
     
-    # if len_processo_listas == 5:
-    #     print (ni)
+    # if len_processo_listas > 3:
+    #     print ((ni,processo_listas))
+    #     break
     
     processo_dados = [processo_id,
                       processo_ident,
@@ -105,8 +119,41 @@ for item in available:
                       'processo_tipo',
                       'len_processo_listas']
 
+
     lista_ref = 0
     for lista in processo_listas:
+        lista_index = 'NA'
+        idLista = 'NA'
+        nomeLista = 'NA'
+        julgado = 'NA'
+        len_votos_complementares = 'NA'#
+        admiteSustentacaoOral = 'NA'
+        relator_codigo = 'NA'
+        relator_nome = 'NA'
+        votoRelator = 'NA'
+        relatorioRelator = 'NA'
+        complementoVotoRelator = 'NA'
+        ministroDestaque = 'NA'
+        ministroVista = 'NA'
+        ministroVistor = 'NA'                            
+        sessao = 'NA'
+        sessao_tipo = 'NA'
+        sessao_numero = 'NA'
+        sessao_ano = 'NA'
+        sessao_colegiado = 'NA'
+        data_primeira_sessao = 'NA'
+        sessao_data_prevista_inicio = 'NA'
+        sessao_data_inicio = 'NA'
+        sessao_data_prevista_fim = 'NA'
+        sessao_data_fim = 'NA'
+        tipoJulgamentoVirtual = 'NA'
+        textoDecisao = 'NA'
+        textoDecisao2 = 'NA'
+        lista_tipo = 'NA'
+        tipoJulgamento = 'NA'
+        tipoJulgamento_desc = 'NA'
+        sustentacoesOrais = 'NA'
+                            
         lista_ref = lista_ref+1
         lista_index = -1*len_processo_listas + lista_ref
     
@@ -160,6 +207,34 @@ for item in available:
     
         textoDecisao = dsl.extract(lista,'"textoDecisao" : "','"')
         textoDecisao2 = dsl.extract(lista,'"cabecalho" : "','"tipoListaJulgamento"')
+        textoDecisao2 = dsl.limpar(dsl.limpar_tudo(textoDecisao2)).upper()
+
+            
+        
+        
+        if 'NDECISÃO:' in textoDecisao2:
+            textoDecisao2 = dsl.extrair(textoDecisao2,'DECISÃO:','')
+        if 'NVOTO:' in textoDecisao2:
+            textoDecisao2 = dsl.extrair(textoDecisao2,'VOTO:','')
+        if 'NVOTO-VISTA:' in textoDecisao2:
+            textoDecisao2 = dsl.extrair(textoDecisao2,'VOTO-VISTA:','')
+        
+        if ', RECEBO A DENÚNCIA EM RELAÇÃO AOS CRIMES PREVISTOS' in textoDecisao2:
+            textoDecisao2 = 'DENÚNCIA RECEBIDA'
+        
+        textoDecisao2 = dsl.limpar(textoDecisao2)
+        
+        for string in ('ANTE O EXPOSTO, ',
+                       'ANTE O EXPOSTO,',
+                       'ANTE O QUADRO',
+                       'ANTE TODO O EXPOSTO, '        
+                       ):
+            textoDecisao2 = textoDecisao2.strip(string)
+        
+            
+        
+
+        
         
         lista_tipo = dsl.limpar(dsl.extract(lista,'"tipoListaJulgamento" : {','}')).replace('codigo" : "','')
         lista_tipo = lista_tipo.replace('", "descricao" : "',':')
@@ -422,7 +497,7 @@ for item in available:
                 else:
                     voto_desc = dsl.extract(voto_texto,'"descricao" : "','"').upper()
                         
-                    voto_texto = dsl.extract(votoRelator,'"link" : "','"')
+                    voto_texto = dsl.extract(voto_texto,'"link" : "','"')
                 
                 voto_complementar_dados =     [vc_index,
                                                 voto_desc,
@@ -709,11 +784,50 @@ for item in available:
                             v12_acompanha,
                             v12_texto
                                 ]
-            
+            voto_com_relator = 1
+            voto_contra_relator = 0
+            maioria_formada = 0
+            maioria_formada_em = 'NA'
+
             votos_tipo = [('Relator', v1_tipo, v2_tipo, v3_tipo, v4_tipo, v5_tipo, v6_tipo, v7_tipo, v8_tipo, v9_tipo, v10_tipo, v11_tipo, v12_tipo)]
+            for n in range(len(votos_tipo[0])):
+                if 'Acompanho o relator' in votos_tipo[0][n]:
+                    voto_com_relator = voto_com_relator + 1
+                    if voto_com_relator == 6:
+                        maioria_formada = n
+                elif 'Divirjo' in votos_tipo[0][n] or 'diverg' in votos_tipo[0][n]:
+                    voto_contra_relator = voto_contra_relator + 1
+                    if voto_contra_relator == 6:
+                        maioria_formada = n
+                    
             votos_datas = [(vRel_data, v1_data, v2_data, v3_data, v4_data, v5_data, v6_data, v7_data, v8_data, v9_data, v10_data, v11_data, v12_data)]
-            votos_relatores = [(vRel_julg, v1_julg, v2_julg, v3_julg, v4_julg, v5_julg, v6_julg, v7_julg, v8_julg, v9_julg, v10_julg, v11_julg, v12_julg)]
             votos_datas2 = [vRel_data, v1_data, v2_data, v3_data, v4_data, v5_data, v6_data, v7_data, v8_data, v9_data, v10_data, v11_data, v12_data]
+            maioria_formada_em = votos_datas[0][maioria_formada]
+            
+            votos_min = [(vRel_julg, v1_julg, v2_julg, v3_julg, v4_julg, v5_julg, v6_julg, v7_julg, v8_julg, v9_julg, v10_julg, v11_julg, v12_julg)]
+
+            data_final = 'NA'
+            for item in votos_datas2:
+                if item == 'na' or item == 'NA':
+                    break
+                else:
+                    data_final = item
+                    
+
+            sessao_duracao = 0
+            
+            if data_final != 'NA':
+                data_inicial = date.fromisoformat(vRel_data)
+                data_final = date.fromisoformat(data_final)
+                sessao_duracao = (data_final - data_inicial).days
+                ateste.append(sessao_duracao)
+            else:
+                data_final = 'NA'
+                
+
+            
+
+
 
 
             processos_PV.append(df_original[:13] + 
@@ -721,10 +835,14 @@ for item in available:
                                 lista_dados+
                                 votos_tipo +
                                 votos_datas +
-                                votos_relatores +
+                                votos_min +
                                 vRel_dados+
                                 votos_ordem +
-                                votos_datas2
+                                votos_datas2 +
+                                [maioria_formada, 
+                                maioria_formada_em, 
+                                data_final, 
+                                sessao_duracao]
                                 )
             
             datas.append([vRel_data, v1_data, v2_data, v3_data, v4_data, v5_data, v6_data, v7_data, v8_data, v9_data, v10_data, v11_data, v12_data])
@@ -813,6 +931,11 @@ dfvotos = pd.DataFrame(votos_PV , columns=[
                                         'sustentacoesOrais'
 
                                         ])
+# n_index = 0
+# for n_index in range(len(votos_PV)-1):
+#     n_index = n_index +1
+#     if n_index > 1 and votos_PV[n_index] == votos_PV[n_index-1]:
+#         print (votos_PV[n_index])
 
 dfprocessos = pd.DataFrame(processos_PV, columns=[ 'incidente',
                                                   'identificador',
@@ -1016,8 +1139,14 @@ dfprocessos = pd.DataFrame(processos_PV, columns=[ 'incidente',
                                             'v9_data2',
                                             'v10_data2', 
                                             'v11_data2',
-                                            'v12_data2'
+                                            'v12_data2',
+                                            'maioria_formada_index_cc',
+                                            'maioria_formada_data_cc',
+                                            'data_final',
+                                            'sessão_duração'
                                             ])
+
+# ateste.sort()
 
 print ('gravando csv')
 dfprocessos.to_csv(DATA_PATH/'processos_PV.txt', index=False)
