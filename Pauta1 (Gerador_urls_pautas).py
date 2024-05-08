@@ -13,8 +13,8 @@ import json
 from helpers import DATA_PATH
 urllib3.disable_warnings()
 
-inicio = 2003
-fim = 2023
+inicio = 2002
+fim = 2024
 path = 'datas_pautas\\'
 processos_pautados = []
 pautas_presenciais_urls = []
@@ -87,4 +87,4 @@ df.to_excel(DATA_PATH/'pautas_virtuais_urls.xlsx', index=False)
 
 df2 = pd.DataFrame(pautas_presenciais_urls, columns=["url_presenciais"])
 df2.to_csv(DATA_PATH/'pautas_presenciais_urls.csv', index=False)
-df.to_excel(DATA_PATH/'pautas_presenciais_urls.xlsx', index=False)
+df2.to_excel(DATA_PATH/'pautas_presenciais_urls.xlsx', index=False)

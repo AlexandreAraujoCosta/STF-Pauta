@@ -26,8 +26,7 @@ lista_buscar = []
 dados_a_gravar = []
 lista_vazia = []
 n = 0
-start = 1
-end = 11
+
 
 for lista in listas:
     if lista[2] == 'TP':
@@ -36,8 +35,7 @@ for lista in listas:
 
         lista_buscar.append(lista)
 
-# for lista in lista_buscar[start:end]:
-for lista in lista_buscar:
+for lista in lista_buscar[n:]:
 
 
     lista_id = str(lista[15])

@@ -19,8 +19,8 @@ source = 'data\\pautas_presenciais_dados.txt'
 presenciais = pd.read_csv(source, dtype={"teste": str}).values.tolist()
 
 
-# presenciais_dados = []
-presenciais = presenciais [:498]
+presenciais_dados = []
+# presenciais = presenciais [:498]
 
 for item in presenciais:
     item_j = json.loads(item[4])
@@ -178,10 +178,10 @@ for item in presenciais:
 
 
 df1 = pd.DataFrame(dados_a_gravar_sem_lista, columns = colunas_sem_lista)
-df1.to_csv('data\\processos_julgados_sem_lista_processados.txt', index=False)
+df1.to_csv('data\\processos_julgados_sem_lista_processados.csv', index=False)
 
 df2 = pd.DataFrame(dados_a_gravar_lista, columns = colunas_lista)
-df2.to_csv('data\\dados_pautas_presenciais_processados.txt', index=False)
+df2.to_csv('data\\dados_pautas_presenciais_processados.csv', index=False)
 
 print('gravando excel')
 df1.to_excel('data\\processos_julgados_sem_lista_processados.xlsx', index=False)
