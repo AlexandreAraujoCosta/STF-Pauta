@@ -7,6 +7,7 @@ Created on Sun Nov 12 18:11:17 2023
 
 import urllib3
 import pandas as pd
+import json
 
 import dsl
 urllib3.disable_warnings()
@@ -16,7 +17,9 @@ out= 'data\\processos_julgados_presencial_TP_'
 url = 'https://portal.stf.jus.br/pauta/services/lista-service.asp?lista='
 # processa presenciais
 
-listas0 = pd.read_csv(source, dtype={"teste": str})
+listas0 = pd.read_csv(source)
+
+
 listas = listas0.values.tolist()
 
 lista_buscar = []
@@ -24,115 +27,59 @@ dados_a_gravar = []
 lista_vazia = []
 n = 0
 start = 1
-# end = 520
+end = 11
 
 for lista in listas:
-    if lista[0] == 'TP':
-    # if lista[0] == 'T1':
-    # if lista[0] == 'T2':
+    if lista[2] == 'TP':
+    # if lista[2] == '1T':
+    # if lista[2] == '2T':
 
         lista_buscar.append(lista)
 
 # for lista in lista_buscar[start:end]:
 for lista in lista_buscar:
 
-    colunas =   [ 'incidente',
-                  'classe',
-                  'numero',
-                  'string',
-                  'procedencia',
-                  'partes',
-                  'autor_tipo',
-                  'orgao',
-                  'id_sessao',
-                  'data_inicial',
-                  'hora_inicial',
-                  'data_final',
-                  'sessao_tipo',
-                  'sessao_n',
-                  'lista_tipo',
-                  'tipo_desc',
-                  'relator',
-                  'lista_id',
-                  'lista_desc',
-                  'lista_ordem',
-                  'lista_quantidade']
-    
-    if n%500 == 0 and n != 0:
-        print ('gravando')
-        df = pd.DataFrame(dados_a_gravar, columns = colunas)
-        df.to_csv(out + str(n+start) +'.txt', index=False)
-        dados_a_gravar = []
-    
-    incidente = 'NA'
-    classe = 'NA'
-    numero = 'NA'
-    string = 'NA'
-    procedencia = 'NA'
-    partes = 'NA'
-    autor_tipo = 'NA'
 
-    dados2 = 'NA'
-    dados3 = 'NA'
-    dados_oi = 'NA'
-    dados_oi0 = 'NA'
-    dados = 'NA'
-    
-#     time.sleep(1)
-    n = n + 1
-    
-    lista_id = str(lista[10])
+    lista_id = str(lista[15])
   
-    dados = dsl.get(url+lista_id)
+    incidentes0 = (dsl.get(url+lista_id))
+    incidentes = json.loads(incidentes0)
+    
+    for incidente in incidentes:
+        inc_cadeia = incidente['cadeia']
+        inc_classe = incidente['classe']
+        inc_id = incidente['id']
+        inc_numero = incidente['numero']
+        inc_procedencia = incidente['procedencia']
+        inc_partes = incidente['partes']
+        inc_polo_ativo_nome = inc_partes[0]['nome']
+        inc_polo_ativo_tipo = inc_partes[0]['categoria'].replace('.(S)','')
         
-#     dsl.esperar(151,120,n)
-    
-    print (str(n) + ' de ' + str(len(lista_buscar) - start) + ' - ' + dados[:50])
-    
-    if dados == '[]':
-        print('lista vazia')
-        lista_vazia.append(url + lista_id)
-        processos = ['lista vazia']
-    else:    
-        processos = dados.split('{"id":"')[1:]
-    
-    for processo in processos:
-
-        incidente = 'NA'
-        classe = 'NA'
-        numero = 'NA'
-        string = 'NA'
-        procedencia = 'NA'
-        partes = 'NA'
-        autor_tipo = 'NA'
-        dados2 = 'NA'
-        dados3 = 'NA'
-        dados_julgamento = 'NA'
-        dados_oi = 'NA'
-        dados_oi0 = 'NA'
-        dados = 'NA'
-
-
-        incidente = dsl.extract(processo,'','"')
-        classe = dsl.extract(processo,'"classe":"','"')
-        numero = dsl.extract(processo,'"numero":"','"')
-        string = dsl.extract(processo,'cadeia":"','"')
-        procedencia = dsl.extract(processo,'"procedencia":"','"')
-        partes = dsl.extract(processo,'"partes":','')
-        autor_tipo = dsl.extract(partes,'[{"categoria":"','"')
-    
-        dados_processo = [incidente,
-                          classe,
-                          numero,
-                          string,
-                          procedencia,
-                          partes, 
-                          autor_tipo] + lista
+        dados_a_acrescentar = [
+                inc_cadeia,
+                inc_classe,
+                inc_id,
+                inc_numero,
+                inc_procedencia,
+                inc_partes,
+                inc_polo_ativo_nome,
+                inc_polo_ativo_tipo]
         
+        dados_incidente = lista + dados_a_acrescentar
         
-        dados_a_gravar.append(dados_processo)
-        
+        dados_a_gravar.append(dados_incidente)
 
-    
-df = pd.DataFrame(dados_a_gravar, columns = [colunas])
+colunas = list(listas0.columns)
+colunas.extend(['inc_cadeia',
+                'inc_classe',
+                'inc_id',
+                'inc_numero',
+                'inc_procedencia',
+                'inc_partes',
+                'inc_polo_ativo_nome',
+                'inc_polo_ativo_tipo'
+    ])
+
+df = pd.DataFrame(dados_a_gravar, columns = colunas)
 df.to_csv(out+'final.txt', index=False)
+df.to_excel(out+'final.xlsx', index=False)
