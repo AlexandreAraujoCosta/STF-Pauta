@@ -79,5 +79,5 @@ colunas.extend(['inc_cadeia',
     ])
 
 df = pd.DataFrame(dados_a_gravar, columns = colunas)
-df.to_csv(out+'final.txt', index=False)
+df.to_csv(out+'final.csv', index=False)
 df.to_excel(out+'final.xlsx', index=False)
